@@ -21,7 +21,6 @@ class PlayScene extends Phaser.Scene {
       .sprite(0, 10, null)
       .setOrigin(0, 1)
       .setAlpha(0);
-    this.registerPlayerControl();
 
     this.physics.add.overlap(this.startTrigger, this.player, () => {
       console.log("colide");
@@ -34,16 +33,6 @@ class PlayScene extends Phaser.Scene {
 
   createPlayer() {
     this.player = new Player(this, 0, this.gameHeight);
-  }
-
-  registerPlayerControl() {
-    const spacebar = this.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.SPACE
-    );
-
-    spacebar.on("down", () => {
-      this.player.setVelocityY(-1600);
-    });
   }
 }
 
