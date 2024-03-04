@@ -10,7 +10,7 @@ class PlayScene extends GameScene {
   startTrigger: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   spawnInterval: number = 1500;
   spawnTime: number = 0;
-  obstacleSpeed: number = -5;
+  gameSpeed: number = 5;
 
   constructor() {
     super("PlayScene");
@@ -81,7 +81,7 @@ class PlayScene extends GameScene {
       this.spawnTime = 0;
     }
 
-    Phaser.Actions.IncX(this.obstacles.getChildren(), this.obstacleSpeed);
+    Phaser.Actions.IncX(this.obstacles.getChildren(), -this.gameSpeed);
 
     this.obstacles
       .getChildren()
@@ -92,6 +92,8 @@ class PlayScene extends GameScene {
           }
         }
       );
+
+    this.ground.tilePositionX += this.gameSpeed;
   }
 }
 
