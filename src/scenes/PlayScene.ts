@@ -1,11 +1,15 @@
 import Phaser from "phaser";
 import { Player } from "../enteties/Player";
 import { GameScene } from "./GameScene";
+import { PRELOAD_CONFIG } from "..";
 
 class PlayScene extends GameScene {
   player: Player;
   ground: Phaser.GameObjects.TileSprite;
+  obstacles: Phaser.Physics.Arcade.Group;
   startTrigger: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  spawnInterval: number = 1500;
+  spawnTime: number = 0;
 
   constructor() {
     super("PlayScene");
@@ -14,6 +18,8 @@ class PlayScene extends GameScene {
   create() {
     this.createEnvironment();
     this.createPlayer();
+
+    this.obstacles = this.physics.add.group();
 
     this.startTrigger = this.physics.add
       .sprite(0, 10, null)
@@ -53,6 +59,26 @@ class PlayScene extends GameScene {
 
   createPlayer() {
     this.player = new Player(this, 0, this.gameHeight);
+  }
+
+  spawnObstacle() {
+    const index = Math.floor(Math.random() * PRELOAD_CONFIG.cactusesCount) + 1;
+    const distance = Phaser.Math.Between(600, 900);
+
+    this.obstacles
+      .create(distance, this.gameHeight, `obstacle-${index}`)
+      .setOrigin(0, 1);
+  }
+
+  update(_: number, delta: number): void {
+    if (!this.isGameRunning) return;
+
+    this.spawnTime += delta;
+
+    if (this.spawnTime >= this.spawnInterval) {
+      this.spawnObstacle();
+      this.spawnTime = 0;
+    }
   }
 }
 
