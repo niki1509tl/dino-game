@@ -1,18 +1,11 @@
 import Phaser from "phaser";
 import { Player } from "../enteties/Player";
+import { GameScene } from "./GameScene";
 
-class PlayScene extends Phaser.Scene {
+class PlayScene extends GameScene {
   player: Player;
   ground: Phaser.GameObjects.TileSprite;
   startTrigger: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-
-  get gameHeight() {
-    return this.game.config.height as number;
-  }
-
-  get gameWidth() {
-    return this.game.config.width as number;
-  }
 
   constructor() {
     super("PlayScene");
@@ -45,6 +38,7 @@ class PlayScene extends Phaser.Scene {
             this.player.setVelocityX(0);
             this.ground.width = this.gameWidth;
             rollOutEvent.remove();
+            this.isGameRunning = true;
           }
         },
       });
