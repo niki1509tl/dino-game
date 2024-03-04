@@ -10,6 +10,7 @@ class PlayScene extends GameScene {
   startTrigger: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   spawnInterval: number = 1500;
   spawnTime: number = 0;
+  obstacleSpeed: number = -5;
 
   constructor() {
     super("PlayScene");
@@ -79,6 +80,18 @@ class PlayScene extends GameScene {
       this.spawnObstacle();
       this.spawnTime = 0;
     }
+
+    Phaser.Actions.IncX(this.obstacles.getChildren(), this.obstacleSpeed);
+
+    this.obstacles
+      .getChildren()
+      .forEach(
+        (obstacle: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody) => {
+          if (obstacle.getBounds().right < 0) {
+            this.obstacles.remove(obstacle);
+          }
+        }
+      );
   }
 }
 
