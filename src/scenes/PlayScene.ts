@@ -11,6 +11,9 @@ class PlayScene extends GameScene {
   spawnInterval: number = 1500;
   spawnTime: number = 0;
   gameSpeed: number = 5;
+  gameOverText: Phaser.GameObjects.Image;
+  restartText: Phaser.GameObjects.Image;
+  gameOverContainer: Phaser.GameObjects.Container;
 
   constructor() {
     super("PlayScene");
@@ -19,22 +22,19 @@ class PlayScene extends GameScene {
   create() {
     this.createEnvironment();
     this.createPlayer();
+    this.createObstacles();
+    this.createGameOverContainer();
 
-    this.obstacles = this.physics.add.group();
+    this.handleGameStart();
+    this.handleObstacleCollision();
+    this.handleGameRestart();
+  }
 
+  handleGameStart() {
     this.startTrigger = this.physics.add
       .sprite(0, 10, null)
       .setOrigin(0, 1)
       .setAlpha(0);
-
-    this.physics.add.collider(this.obstacles, this.player, () => {
-      this.isGameRunning = false;
-      this.physics.pause();
-      this.player.die();
-
-      this.spawnTime = 0;
-      this.gameSpeed = 5;
-    });
 
     this.physics.add.overlap(this.startTrigger, this.player, () => {
       if (this.startTrigger.y == 10) {
@@ -59,6 +59,46 @@ class PlayScene extends GameScene {
         },
       });
     });
+  }
+
+  handleObstacleCollision() {
+    this.physics.add.collider(this.obstacles, this.player, () => {
+      this.isGameRunning = false;
+      this.physics.pause();
+      this.player.die();
+      this.gameOverContainer.setAlpha(1);
+
+      this.spawnTime = 0;
+      this.gameSpeed = 5;
+    });
+  }
+
+  handleGameRestart() {
+    this.restartText.on("pointerdown", () => {
+      this.physics.resume();
+      this.player.setVelocityY(0);
+
+      this.obstacles.clear(true, true);
+      this.gameOverContainer.setAlpha(0);
+      this.anims.resumeAll();
+
+      this.isGameRunning = true;
+    });
+  }
+
+  createObstacles() {
+    this.obstacles = this.physics.add.group();
+  }
+
+  createGameOverContainer() {
+    this.gameOverText = this.add.image(0, 0, "game-over");
+    this.restartText = this.add.image(0, 80, "restart").setInteractive();
+
+    this.gameOverContainer = this.add
+      .container(this.gameWidth / 2, this.gameHeight / 2 - 50)
+      .add([this.gameOverText, this.restartText]);
+
+    this.gameOverContainer.setAlpha(0);
   }
 
   createEnvironment() {
