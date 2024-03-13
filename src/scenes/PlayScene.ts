@@ -17,6 +17,7 @@ class PlayScene extends GameScene {
   highScoreText: Phaser.GameObjects.Text;
   restartText: Phaser.GameObjects.Image;
   gameOverContainer: Phaser.GameObjects.Container;
+  progressSound: Phaser.Sound.HTML5AudioSound;
 
   score = 0;
   scoreInterval = 100;
@@ -38,6 +39,10 @@ class PlayScene extends GameScene {
     this.handleGameStart();
     this.handleObstacleCollision();
     this.handleGameRestart();
+
+    this.progressSound = this.sound.add("progress", {
+      volume: 0.5,
+    }) as Phaser.Sound.HTML5AudioSound;
   }
 
   createScore() {
@@ -231,6 +236,8 @@ class PlayScene extends GameScene {
           alpha: 0,
           yoyo: true,
         });
+
+        this.progressSound.play();
       }
     }
 
