@@ -223,6 +223,14 @@ class PlayScene extends GameScene {
 
       if (this.score % 100 === 0) {
         this.gameSpeedModifier += 0.2;
+
+        this.tweens.add({
+          targets: this.scoreText,
+          duration: 100,
+          repeat: 3,
+          alpha: 0,
+          yoyo: true,
+        });
       }
     }
 
