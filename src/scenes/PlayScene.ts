@@ -17,6 +17,10 @@ class PlayScene extends GameScene {
   restartText: Phaser.GameObjects.Image;
   gameOverContainer: Phaser.GameObjects.Container;
 
+  score = 0;
+  scoreInterval = 100;
+  scoreDeltaTime = 0;
+
   constructor() {
     super("PlayScene");
   }
@@ -98,6 +102,8 @@ class PlayScene extends GameScene {
 
       this.spawnTime = 0;
       this.gameSpeed = 5;
+      this.scoreDeltaTime = 0;
+      this.score = 0;
     });
   }
 
@@ -181,11 +187,23 @@ class PlayScene extends GameScene {
     if (!this.isGameRunning) return;
 
     this.spawnTime += delta;
+    this.scoreDeltaTime += delta;
 
     if (this.spawnTime >= this.spawnInterval) {
       this.spawnObstacle();
       this.spawnTime = 0;
     }
+
+    if (this.scoreDeltaTime >= this.scoreInterval) {
+      this.score++;
+      this.scoreDeltaTime = 0;
+    }
+
+    const score = Array.from(String(this.score), Number);
+    for (let i = 0; i < 5 - String(this.score).length; i++) {
+      score.unshift(0);
+    }
+    this.scoreText.setText(score.join(""));
 
     Phaser.Actions.IncX(this.obstacles.getChildren(), -this.gameSpeed);
     Phaser.Actions.IncX(this.clouds.getChildren(), -0.5);
