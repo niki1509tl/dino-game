@@ -13,6 +13,7 @@ class PlayScene extends GameScene {
   spawnTime: number = 0;
   gameSpeed: number = 5;
   gameOverText: Phaser.GameObjects.Image;
+  scoreText: Phaser.GameObjects.Text;
   restartText: Phaser.GameObjects.Image;
   gameOverContainer: Phaser.GameObjects.Container;
 
@@ -26,10 +27,23 @@ class PlayScene extends GameScene {
     this.createObstacles();
     this.createGameOverContainer();
     this.createAnimations();
+    this.createScore();
 
     this.handleGameStart();
     this.handleObstacleCollision();
     this.handleGameRestart();
+  }
+
+  createScore() {
+    this.scoreText = this.add
+      .text(this.gameWidth, 0, `00000`, {
+        fontSize: 30,
+        fontFamily: "Arial",
+        color: "#535353",
+        resolution: 5,
+      })
+      .setOrigin(1, 0)
+      .setAlpha(0);
   }
 
   createAnimations() {
@@ -66,6 +80,7 @@ class PlayScene extends GameScene {
             this.ground.width = this.gameWidth;
             rollOutEvent.remove();
             this.clouds.setAlpha(1);
+            this.scoreText.setAlpha(1);
             this.isGameRunning = true;
           }
         },
