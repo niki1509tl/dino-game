@@ -14,6 +14,7 @@ class PlayScene extends GameScene {
   gameSpeed: number = 5;
   gameOverText: Phaser.GameObjects.Image;
   scoreText: Phaser.GameObjects.Text;
+  highScoreText: Phaser.GameObjects.Text;
   restartText: Phaser.GameObjects.Image;
   gameOverContainer: Phaser.GameObjects.Container;
 
@@ -42,6 +43,16 @@ class PlayScene extends GameScene {
   createScore() {
     this.scoreText = this.add
       .text(this.gameWidth, 0, `00000`, {
+        fontSize: 30,
+        fontFamily: "Arial",
+        color: "#535353",
+        resolution: 5,
+      })
+      .setOrigin(1, 0)
+      .setAlpha(0);
+
+    this.highScoreText = this.add
+      .text(this.gameWidth - this.scoreText.width - 20, 0, `00000`, {
         fontSize: 30,
         fontFamily: "Arial",
         color: "#535353",
@@ -101,6 +112,16 @@ class PlayScene extends GameScene {
       this.gameOverContainer.setAlpha(1);
       this.anims.pauseAll();
 
+      const newHighScore = this.highScoreText.text.substring(
+        this.highScoreText.text.length - 5
+      );
+      const newScore =
+        Number(this.scoreText.text) > Number(newHighScore)
+          ? this.scoreText.text
+          : newHighScore;
+      this.highScoreText.setText("HI " + newScore);
+      this.highScoreText.setAlpha(1);
+
       this.spawnTime = 0;
       this.scoreDeltaTime = 0;
       this.score = 0;
@@ -116,6 +137,7 @@ class PlayScene extends GameScene {
       this.obstacles.clear(true, true);
       this.gameOverContainer.setAlpha(0);
       this.anims.resumeAll();
+      this.highScoreText.setAlpha(0);
 
       this.isGameRunning = true;
     });
